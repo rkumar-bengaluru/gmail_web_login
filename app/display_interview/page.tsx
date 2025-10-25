@@ -141,6 +141,59 @@ export default function DisplayInterview() {
         }
     };
 
+    const handleJoinAndRecord = async () => {
+        if (!email.trim()) return;
+
+        setJoined(true);
+
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+
+            if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+            }
+
+            const recorder = new MediaRecorder(stream);
+            const chunks: BlobPart[] = [];
+
+            recorder.ondataavailable = (e) => {
+            if (e.data.size > 0) chunks.push(e.data);
+            };
+
+            recorder.onstop = async () => {
+            const blob = new Blob(chunks, { type: 'video/webm' });
+            const formData = new FormData();
+            formData.append('recording', blob, 'interview.webm');
+            formData.append('email', email);
+
+            try {
+                const res = await fetch('/api/uploadRecording', {
+                method: 'POST',
+                body: formData,
+                });
+
+                if (!res.ok) throw new Error('Upload failed');
+                console.log('Recording uploaded successfully');
+            } catch (err) {
+                console.error('Upload error:', err);
+            }
+            };
+
+            recorder.start();
+            console.log('Recording started');
+
+            setTimeout(() => {
+            recorder.stop();
+            stream.getTracks().forEach((track) => track.stop());
+            console.log('Recording stopped');
+            }, 10000); // 10 seconds
+
+        } catch (err) {
+            console.error('Permission or recording error:', err);
+        }
+        };
+
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       {/* Permission Modal */}
@@ -197,12 +250,12 @@ export default function DisplayInterview() {
               className="border border-gray-300 rounded px-3 py-2 mb-4"
               placeholder="Enter your email"
             />
-            <button
-              disabled={!email}
-              onClick={() => setJoined(true)}
-              className={`py-2 px-4 rounded text-white ${email ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-gray-400 cursor-not-allowed'}`}
+           <button
+            disabled={!email}
+            onClick={handleJoinAndRecord}
+            className={`py-2 px-4 rounded text-white ${email ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-gray-400 cursor-not-allowed'}`}
             >
-              Join
+            Join
             </button>
 
             <button onClick={stopVideo} className="bg-red-600 text-white px-4 py-2 rounded">
