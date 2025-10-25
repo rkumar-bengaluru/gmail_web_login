@@ -34,7 +34,7 @@ export default function DisplayInterview() {
     }, []);
 
     useEffect(() => {
-    const testJson = searchParams.get('test');
+    const testJson = searchParams?.get('test');
     if (testJson) {
       try {
         setSelectedTest(JSON.parse(decodeURIComponent(testJson)) as Test);
