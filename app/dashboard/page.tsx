@@ -3,7 +3,7 @@
 
 import { useSession, signOut } from 'next-auth/react';
 import { useEffect, useState, useRef } from 'react';
-import { Test, Topic } from '@/types';
+import { Test, Topic } from '../../types';
 import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
@@ -13,6 +13,14 @@ export default function DashboardPage() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  useEffect(() => {
+  if (selectedTest) {
+    const testJson = JSON.stringify(selectedTest);
+    router.push(`/test?test=${encodeURIComponent(testJson)}`);
+  }
+}, [selectedTest]);
+
 
   // 🔑 Redirect if not authenticated
   useEffect(() => {
@@ -160,27 +168,16 @@ export default function DashboardPage() {
 
         {/* Modal for selected test */}
         {selectedTest && (
-          <div 
-            className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-start justify-center pt-20"
-            onClick={() => setSelectedTest(null)}
+          <div
+            key={selectedTest.test_name}
+            className="bg-white overflow-hidden shadow rounded-lg cursor-pointer hover:shadow-lg transition-shadow duration-200"
+            onClick={() => {
+              const testJson = JSON.stringify(selectedTest);
+              router.push(`/test_qroq?test=${encodeURIComponent(testJson)}`);
+              // router.push(`/test_qwen?test=${encodeURIComponent(selectedTest.test_name)}`);
+            }}
           >
-            <div 
-              className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h3 className="text-xl font-bold text-gray-900 mb-3">{selectedTest.test_name}</h3>
-              <p className="text-gray-600 mb-2"><span className="font-medium">Role:</span> {selectedTest.role}</p>
-              <p className="text-gray-600 mb-2"><span className="font-medium">Date:</span> {formatDate(selectedTest.date)}</p>
-              <p className="text-gray-600 mb-4">
-                <span className="font-medium">No. of Questions:</span> {selectedTest.questions?.length || 0}
-              </p>
-              <button
-                onClick={() => setSelectedTest(null)}
-                className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors"
-              >
-                Close
-              </button>
-            </div>
+            {/* card content */}
           </div>
         )}
       </div>

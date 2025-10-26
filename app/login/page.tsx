@@ -24,7 +24,7 @@ export default function LoginPage() {
 
   // 🔑 Handle Google login error from URL (optional)
   useEffect(() => {
-    const errorParam = searchParams.get('error');
+    const errorParam = searchParams?.get('test');
     if (errorParam) {
       setError('Google login failed. Please try again.');
     }
