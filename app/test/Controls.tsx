@@ -1,4 +1,4 @@
-import { useMediaSessionWithTimeout } from '@/hooks/userMediaSessionTimeout';
+import { useMediaSessionWithTimeout } from '../hooks/userMediaSessionTimeout';
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./BottomControls.module.css";
 import { useRouter } from "next/navigation";

@@ -2,7 +2,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Test } from "@/types"; // Assuming types are in '@/types'
+import { Test } from "../../types"; // Assuming types are in '@/types'
 
 import VideoSection from "./VideoSection";
 import AgentSection from "./AgentSection";
@@ -216,7 +216,7 @@ export default function DisplayInterview() {
                 display: "flex",
                 flexDirection: "column",
                 height: "100%",
-                backgroundColor: "#202124",
+                backgroundColor: "#eceef2ff",
             }}
             >
             {/* Main video + agent area */}

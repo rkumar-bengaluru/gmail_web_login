@@ -3,7 +3,7 @@
 
 import { useSession, signOut } from 'next-auth/react';
 import { useEffect, useState, useRef } from 'react';
-import { Test, Topic } from '@/types';
+import { Test, Topic } from '../../types';
 import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
