@@ -15,6 +15,7 @@ export default function DisplayInterview() {
   const [videoEnabled, setVideoEnabled] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [test, setTest] = useState(false);
+  const [stream, setStream] = useState<MediaStream | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -69,6 +70,7 @@ export default function DisplayInterview() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
       setVideoEnabled(true);
+      setStream(stream)
       if (videoRef.current) videoRef.current.srcObject = stream;
 
     } catch (err) {

@@ -6,7 +6,7 @@ import { Test } from "@/types"; // Assuming types are in '@/types'
 
 import VideoSection from "./VideoSection";
 import AgentSection from "./AgentSection";
-import BottomControls from "./BottomControls";
+import Controls from "./Controls";
 
 export default function DisplayInterview() {
   const [selectedTest, setSelectedTest] = useState<Test | null>(null);
@@ -20,6 +20,7 @@ export default function DisplayInterview() {
   const [videoEnabled, setVideoEnabled] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [test, setTest] = useState(false);
+  const [stream, setStream] = useState<MediaStream | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -71,19 +72,23 @@ export default function DisplayInterview() {
     if (raw) setTest(JSON.parse(raw));
   }, []);
 
-  const handlePermission = () => {
-    setPermissionModal(false);
-    setScopeModal(true);
-  };
+  // const handlePermission = () => {
+  //   setPermissionModal(false);
+  //   setScopeModal(true);
+  // };
 
   const handleScope = async () => {
+    setPermissionModal(false);
     setScopeModal(false);
     try {
+        
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
         video: true,
       });
       setVideoEnabled(true);
+      setAudioEnabled(true)
+      setStream(stream)
       if (videoRef.current) videoRef.current.srcObject = stream;
     } catch (err) {
       console.error("Permission denied or error:", err);
@@ -177,7 +182,7 @@ export default function DisplayInterview() {
               Allow Microphone and Camera Access
             </h2>
             <button
-              onClick={handlePermission}
+              onClick={handleScope}
               className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
             >
               Continue
@@ -187,7 +192,7 @@ export default function DisplayInterview() {
       )}
 
       {/* Scope Modal */}
-      {scopeModal && (
+      {/* {scopeModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded shadow-md">
             <h2 className="text-lg font-semibold mb-4">
@@ -201,7 +206,7 @@ export default function DisplayInterview() {
             </button>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* User Joined Call */}
       {joined && (
@@ -232,7 +237,7 @@ export default function DisplayInterview() {
 
             {/* Bottom controls with fixed height */}
             <div style={{ height: "64px" }}>
-                <BottomControls />
+                <Controls stream={stream} email={email} videoRef={videoRef}/>
             </div>
             </div>
         </div>

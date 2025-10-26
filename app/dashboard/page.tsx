@@ -17,7 +17,7 @@ export default function DashboardPage() {
   useEffect(() => {
   if (selectedTest) {
     const testJson = JSON.stringify(selectedTest);
-    router.push(`/display_interview?test=${encodeURIComponent(testJson)}`);
+    router.push(`/test?test=${encodeURIComponent(testJson)}`);
   }
 }, [selectedTest]);
 
